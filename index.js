@@ -241,6 +241,44 @@ app.get('/', (req, res) => {
   });
 });
 
+
+app.post('/', async (req, res) => {
+  try {
+    console.log('📡 Test FCM reçu:', req.body);
+    
+    const { test, token, message } = req.body;
+    
+    if (test && token) {
+      // Envoyer notification test
+      const success = await sendFCMNotification(token, {
+        id: 'test',
+        token: 'TEST',
+        perfFlottante: -25
+      }, message || 'Test notification direct depuis mobile', 'critical');
+      
+      if (success) {
+        res.json({ 
+          status: 'success', 
+          message: 'Notification test envoyée',
+          timestamp: new Date().toISOString()
+        });
+      } else {
+        res.status(500).json({ error: 'Erreur envoi FCM' });
+      }
+    } else {
+      res.json({ 
+        status: 'endpoint actif',
+        message: 'Railway fonctionne',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+  } catch (error) {
+    console.error('❌ Erreur endpoint test:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Endpoint de test manuel
 app.post('/test-notifications', async (req, res) => {
   try {
