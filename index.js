@@ -132,7 +132,7 @@ async function checkTradeThresholds(trade, userData, userId) {
       message = `📉 ${trade.token} : ${performance.toFixed(1)}% de perte`;
       priority = 'normal';
     }
-  }
+  } 
   // 🚨 PERTES IMPORTANTES (-20%)
   else if (performance <= -20 && performance > -50) {
     notifKey = `${userId}_${tradeId}_loss_20`;
