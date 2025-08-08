@@ -30,6 +30,19 @@ const messaging = admin.messaging();
 // ===== CACHE DES NOTIFICATIONS ENVOYÉES =====
 const sentNotifications = new Set();
 
+// ===== RÉCUPÉRATION PRIX TEMPS RÉEL =====
+async function getCurrentPrice(token) {
+  try {
+    const symbol = token + 'USDT'; // BTC → BTCUSDT
+    const response = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`);
+    const data = await response.json();
+    return parseFloat(data.price);
+  } catch (error) {
+    console.error(`❌ Erreur prix ${token}:`, error);
+    return null;
+  }
+}
+
 // ===== FONCTION PRINCIPALE =====
 async function checkTradingAlerts() {
   console.log('🔍 Vérification des alertes trading...', new Date().toISOString());
@@ -78,14 +91,30 @@ async function checkTradingAlerts() {
 
 // ===== VÉRIFICATION DES SEUILS =====
 async function checkTradeThresholds(trade, userData, userId) {
-  const performance = trade.perfFlottante || 0;
-  const tradeId = trade.id;
+  // 1. Récupérer prix actuel
+  const currentPrice = await getCurrentPrice(trade.token);
+  if (!currentPrice) return false;
   
+  // 2. Calculer performance en temps réel
+  const isLong = trade.position.includes('Long');
+  const leverMultiplier = parseInt(trade.levier.replace('x', ''));
+  const priceDiff = currentPrice - trade.prixOuv;
+  
+  let performance;
+  if (isLong) {
+    performance = (priceDiff / trade.prixOuv) * 100 * leverMultiplier;
+  } else {
+    performance = (-priceDiff / trade.prixOuv) * 100 * leverMultiplier;
+  }
+  
+  console.log(`📊 ${trade.token}: ${trade.prixOuv} → ${currentPrice} = ${performance.toFixed(2)}%`);
+  
+  const tradeId = trade.id;
   let shouldNotify = false;
   let message = '';
   let priority = 'normal';
   let notifKey = '';
-  
+
   // 🚀 PROFITS (+10%)
   if (performance >= 10) {
     notifKey = `${userId}_${tradeId}_profit_10`;
@@ -122,7 +151,7 @@ async function checkTradeThresholds(trade, userData, userId) {
       priority = 'critical';
     }
   }
-  
+
   // Envoyer notification si nécessaire
   if (shouldNotify) {
     const sent = await sendFCMNotification(userData.fcmToken, trade, message, priority);
