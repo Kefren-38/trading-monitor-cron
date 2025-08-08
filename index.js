@@ -109,31 +109,40 @@ async function checkTradeThresholds(trade, userData, userId) {
   
   console.log(`📊 ${trade.token}: ${trade.prixOuv} → ${currentPrice} = ${performance.toFixed(2)}%`);
   
-  const tradeId = trade.id;
+const tradeId = trade.id;
   let shouldNotify = false;
   let message = '';
   let priority = 'normal';
   let notifKey = '';
 
-  // 🚀 PROFITS (+10%)
-if (performance >= 5) {
-  notifKey = `${userId}_${tradeId}_profit_5`;
-  if (!sentNotifications.has(notifKey)) {
-    shouldNotify = true;
-    message = `🚀 ${trade.token} : +${performance.toFixed(1)}% de profit !`;
-    priority = 'normal';
+  // 🚀 PROFITS (+5%)
+  if (performance >= 5) {
+    notifKey = `${userId}_${tradeId}_profit_5`;
+    if (!sentNotifications.has(notifKey)) {
+      shouldNotify = true;
+      message = `🚀 ${trade.token} : +${performance.toFixed(1)}% de profit !`;
+      priority = 'normal';
+    }
   }
-}
-// 📉 PERTES LÉGÈRES (-2%) au lieu de -10%
-else if (performance <= -2 && performance > -10) {
-  notifKey = `${userId}_${tradeId}_loss_2`;
-  if (!sentNotifications.has(notifKey)) {
-    shouldNotify = true;
-    message = `📉 ${trade.token} : ${performance.toFixed(1)}% de perte`;
-    priority = 'normal';
+  // 📉 PERTES LÉGÈRES (-2%)
+  else if (performance <= -2 && performance > -10) {
+    notifKey = `${userId}_${tradeId}_loss_2`;
+    if (!sentNotifications.has(notifKey)) {
+      shouldNotify = true;
+      message = `📉 ${trade.token} : ${performance.toFixed(1)}% de perte`;
+      priority = 'normal';
+    }
   }
-}
-  // 🚨 PERTES IMPORTANTES (-20%)
+  // 🚨 PERTES IMPORTANTES (-10%)
+  else if (performance <= -10 && performance > -20) {
+    notifKey = `${userId}_${tradeId}_loss_10`;
+    if (!sentNotifications.has(notifKey)) {
+      shouldNotify = true;
+      message = `🚨 ${trade.token} : ${performance.toFixed(1)}% de perte importante !`;
+      priority = 'high';
+    }
+  }
+  // 🚨 PERTES DANGEREUSES (-20%)
   else if (performance <= -20 && performance > -50) {
     notifKey = `${userId}_${tradeId}_loss_20`;
     if (!sentNotifications.has(notifKey)) {
@@ -149,16 +158,6 @@ else if (performance <= -2 && performance > -10) {
       shouldNotify = true;
       message = `💀 ALERTE CRITIQUE ! ${trade.token} : ${performance.toFixed(1)}% - LIQUIDATION IMMINENTE !`;
       priority = 'critical';
-    }
-  }
-
-  // Envoyer notification si nécessaire
-  if (shouldNotify) {
-    const sent = await sendFCMNotification(userData.fcmToken, trade, message, priority);
-    if (sent) {
-      sentNotifications.add(notifKey);
-      console.log(`🔔 Notification envoyée: ${message}`);
-      return true;
     }
   }
   
