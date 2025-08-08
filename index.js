@@ -279,4 +279,4 @@ process.on('uncaughtException', (error) => {
   console.error('❌ Uncaught Exception:', error);
 });
 
-console.log('✅ CryptoTraders Notification System chargé');
+console.log('✅ CryptoTraders Notification System chargé'); 
