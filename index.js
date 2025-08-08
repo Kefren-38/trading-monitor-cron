@@ -116,23 +116,23 @@ async function checkTradeThresholds(trade, userData, userId) {
   let notifKey = '';
 
   // 🚀 PROFITS (+10%)
-  if (performance >= 10) {
-    notifKey = `${userId}_${tradeId}_profit_10`;
-    if (!sentNotifications.has(notifKey)) {
-      shouldNotify = true;
-      message = `🚀 ${trade.token} : +${performance.toFixed(1)}% de profit !`;
-      priority = 'normal';
-    }
+if (performance >= 5) {
+  notifKey = `${userId}_${tradeId}_profit_5`;
+  if (!sentNotifications.has(notifKey)) {
+    shouldNotify = true;
+    message = `🚀 ${trade.token} : +${performance.toFixed(1)}% de profit !`;
+    priority = 'normal';
   }
-  // 📉 PERTES LÉGÈRES (-10%)
-  else if (performance <= -10 && performance > -20) {
-    notifKey = `${userId}_${tradeId}_loss_10`;
-    if (!sentNotifications.has(notifKey)) {
-      shouldNotify = true;
-      message = `📉 ${trade.token} : ${performance.toFixed(1)}% de perte`;
-      priority = 'normal';
-    }
-  } 
+}
+// 📉 PERTES LÉGÈRES (-2%) au lieu de -10%
+else if (performance <= -2 && performance > -10) {
+  notifKey = `${userId}_${tradeId}_loss_2`;
+  if (!sentNotifications.has(notifKey)) {
+    shouldNotify = true;
+    message = `📉 ${trade.token} : ${performance.toFixed(1)}% de perte`;
+    priority = 'normal';
+  }
+}
   // 🚨 PERTES IMPORTANTES (-20%)
   else if (performance <= -20 && performance > -50) {
     notifKey = `${userId}_${tradeId}_loss_20`;
