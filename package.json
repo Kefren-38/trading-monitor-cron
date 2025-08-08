@@ -1,0 +1,12 @@
+{
+  "name": "trading-monitor",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "node-cron": "^3.0.2",
+    "node-fetch": "^2.6.7",
+    "express": "^4.18.2"
+  }
+}
