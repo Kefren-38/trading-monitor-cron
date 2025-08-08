@@ -8,7 +8,7 @@ cron.schedule('* * * * *', async () => {
     try {
         console.log('📡 Checking trading positions...');
         
-        const response = await fetch('https://us-central1-buildtradeacademy.cloudfunctions.net/checkTradingPositions', {
+        const response = await fetch('https://us-central1-buildtradeacademy.cloudfunctions.net/testRailway', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
