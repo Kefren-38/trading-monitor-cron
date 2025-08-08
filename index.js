@@ -201,8 +201,8 @@ async function sendFCMNotification(fcmToken, trade, message, priority = 'normal'
         notification: {
           title: '🚨 CryptoTraders Pro - ALERTE TRADING',
           body: message,
-          icon: '/favicon.ico',
-          badge: '/favicon.ico',
+          icon: 'https://raw.githubusercontent.com/Kefren-38/trading-monitor-cron/main/logo.png',
+          badge: 'https://raw.githubusercontent.com/Kefren-38/trading-monitor-cron/main/badge.png',
           tag: `trading-${trade.id}`,
           requireInteraction: priority === 'critical',
           vibrate: priority === 'critical' ? [500, 200, 500, 200, 800] : [200, 100, 200]
