@@ -170,10 +170,6 @@ async function sendFCMNotification(fcmToken, trade, message, priority = 'normal'
   try {
     const notificationData = {
       token: fcmToken,
-      notification: {
-        title: '🚨 CryptoTraders Pro - ALERTE TRADING',
-        body: message
-      },
       data: {
         tradeId: trade.id.toString(),
         token: trade.token,
