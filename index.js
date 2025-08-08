@@ -3,8 +3,8 @@ const fetch = require('node-fetch');
 
 console.log('🚀 Trading Monitor démarré sur Railway');
 
-// Cron job toutes les 5 minutes
-cron.schedule('*/5 * * * *', async () => {
+// Cron job toutes les 1 minutes
+cron.schedule('* * * * *', async () => {
     try {
         console.log('📡 Checking trading positions...');
         
