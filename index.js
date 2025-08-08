@@ -225,6 +225,15 @@ app.post('/test-notifications', async (req, res) => {
   }
 });
 
+app.get('/test-notifications', async (req, res) => {
+  try {
+    await checkTradingAlerts();
+    res.json({ success: true, message: 'Test notifications terminé' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // ===== CRON JOB =====
 // Vérifier toutes les 1 minute
 cron.schedule('* * * * *', () => {
