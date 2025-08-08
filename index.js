@@ -175,7 +175,8 @@ async function sendFCMNotification(fcmToken, trade, message, priority = 'normal'
         token: trade.token,
         priority: priority,
         performance: trade.perfFlottante?.toString() || '0',
-        timestamp: Date.now().toString()
+        timestamp: Date.now().toString(),
+        requireInteraction: priority === 'critical' ? 'true' : 'false'
       },
       android: {
         priority: priority === 'critical' ? 'high' : 'normal',
