@@ -211,9 +211,7 @@ async function sendFCMNotification(fcmToken, trade, message, priority = 'normal'
           channel_id: 'trading_alerts',
           priority: 'high',
           default_vibrate_timings: true,
-          notification_priority: 2,
-          visibility: 1,
-          sticky: false
+          notification_priority: 2
         }
       },
       apns: {
