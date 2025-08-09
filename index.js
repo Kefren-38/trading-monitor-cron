@@ -277,13 +277,21 @@ async function sendFCMNotification(fcmToken, trade, message, priority = 'normal'
      }
    };
    
-   console.log('✅ Notification PRÊTE (pas envoyée):', message);
-   return true;
-   
- } catch (error) {
-   console.error('❌ Erreur préparation notification:', error);
-   return false;
- }
+    const response = await messaging.send(notificationData);
+    console.log('✅ Notification FCM envoyée:', response);
+    return true;
+    
+  } catch (error) {
+    console.error('❌ Erreur envoi FCM:', error);
+    
+    // Si token invalide, le supprimer de la base
+    if (error.code === 'messaging/registration-token-not-registered') {
+      console.log('🗑️ Token FCM invalide, suppression...');
+      // Ici tu peux ajouter code pour supprimer le token invalide
+    }
+    
+    return false;
+  }
 }
 
 // ===== SERVEUR EXPRESS =====
