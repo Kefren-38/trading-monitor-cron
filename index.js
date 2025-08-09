@@ -254,14 +254,9 @@ async function sendFCMNotification(fcmToken, trade, message, priority = 'normal'
       priority: 'high',
       ttl: 0,
       notification: {
-        channel_id: 'critical_alerts', // ← Canal critique
+        channel_id: 'critical_alerts',
         priority: 'max',
-        notification_priority: 2,      // ← NOTIFICATION_PRIORITY_MAX
-        category: 'alarm',             // ← Catégorie critique
-        visibility: 'public',          // ← Visible sur écran verrouillé
-        show_when: true,
-        ongoing: false,
-        auto_cancel: true,
+        notification_priority: 2,
         default_sound: true,
         default_vibrate_timings: true
       }
@@ -284,10 +279,10 @@ async function sendFCMNotification(fcmToken, trade, message, priority = 'normal'
         title: '🚨 ALERTE TRADING CRITIQUE',
         body: message,
         tag: `critical-${trade.id}`,
-        requireInteraction: true,     // ← Force interaction
-        renotify: true,              // ← Force re-affichage
+        requireInteraction: true,
+        renotify: true,
         silent: false,
-        vibrate: [1000, 500, 1000, 500, 1000], // ← Vibration intense
+        vibrate: [1000, 500, 1000],
         actions: [
           { action: 'view', title: '👀 VOIR' },
           { action: 'close', title: '❌ FERMER' }
