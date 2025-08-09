@@ -243,6 +243,10 @@ async function sendFCMNotification(fcmToken, trade, message, priority = 'normal'
   try {
     const notificationData = {
       token: fcmToken,
+      notification: {  // ← AJOUTEZ CETTE SECTION
+        title: '🚨 Crypto-Nitro - ALERTE TRADING',
+        body: message
+      },
       data: {
         tradeId: trade.id.toString(),
         token: trade.token,
@@ -263,7 +267,7 @@ async function sendFCMNotification(fcmToken, trade, message, priority = 'normal'
         payload: {
           aps: {
             alert: {
-              title: '🚨 CryptoTraders Pro',
+              title: '🚨 Crypto-Nitro',
               body: message
             },
             badge: 1,
@@ -276,7 +280,7 @@ async function sendFCMNotification(fcmToken, trade, message, priority = 'normal'
           'Urgency': 'high'
         },
         notification: {
-          title: '🚨 CryptoTraders Pro - ALERTE TRADING',
+          title: '🚨 Crypto-Nitro - ALERTE TRADING',
           body: message,
           icon: 'https://raw.githubusercontent.com/Kefren-38/trading-monitor-cron/main/logo.png',
           badge: 'https://raw.githubusercontent.com/Kefren-38/trading-monitor-cron/main/badge.png',
