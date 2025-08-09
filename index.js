@@ -228,7 +228,7 @@ async function sendFCMNotification(fcmToken, trade, message, priority = 'normal'
       },
       webpush: {
         headers: {
-        'Urgency': 'high' // ← FORCE LIVRAISON IMMÉDIATE
+          'Urgency': 'high'
         },
         notification: {
           title: '🚨 CryptoTraders Pro - ALERTE TRADING',
@@ -237,7 +237,17 @@ async function sendFCMNotification(fcmToken, trade, message, priority = 'normal'
           badge: 'https://raw.githubusercontent.com/Kefren-38/trading-monitor-cron/main/badge.png',
           tag: `trading-${trade.id}`,
           requireInteraction: true,
-          vibrate: [500, 200, 500, 200, 800]
+          vibrate: [500, 200, 500, 200, 800],
+          actions: [
+            {
+              action: 'view',
+              title: 'Voir les trades'
+            },
+            {
+              action: 'close', 
+              title: 'Fermer'
+            }
+          ]
         }
       }
     };
