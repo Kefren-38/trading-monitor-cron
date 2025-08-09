@@ -242,66 +242,50 @@ else if (performance <= -80) {
 async function sendFCMNotification(fcmToken, trade, message, priority = 'normal') {
   try {
     const notificationData = {
-      token: fcmToken,
-      notification: {  // ← AJOUTEZ CETTE SECTION
-        title: '🚨 Crypto-Nitro - ALERTE TRADING',
-        body: message
-      },
-      data: {
-        tradeId: trade.id.toString(),
-        token: trade.token,
-        priority: priority,
-        performance: trade.perfFlottante?.toString() || '0',
-        timestamp: Date.now().toString(),
-        requireInteraction: priority === 'critical' ? 'true' : 'false'
-      },
-      android: {
-        priority: 'high',
-        notification: {
-          channel_id: 'high_importance',  // ← Nouveau canal
-          priority: 'max',
-          notification_priority: 1,
-          default_sound: true,
-          default_vibrate_timings: true
+    token: fcmToken,
+    data: {
+      tradeId: trade.id.toString(),
+      token: trade.token,
+      priority: priority,
+      performance: trade.perfFlottante?.toString() || '0',
+      timestamp: Date.now().toString()
+    },
+    android: {
+      priority: 'high',
+      notification: {
+        channel_id: 'high_importance',
+        priority: 'max',
+        notification_priority: 1,
+        default_sound: true,
+        default_vibrate_timings: true
       }
     },
-      apns: {
-        payload: {
-          aps: {
-            alert: {
-              title: '🚨 Crypto-Nitro',
-              body: message
-            },
-            badge: 1,
-            sound: priority === 'critical' ? 'critical.wav' : 'default'
-          }
-        }
-      },
-      webpush: {
-        headers: {
-          'Urgency': 'high'
-        },
-        notification: {
-          title: '🚨 Crypto-Nitro - ALERTE TRADING',
-          body: message,
-          icon: 'https://raw.githubusercontent.com/Kefren-38/trading-monitor-cron/main/logo.png',
-          badge: 'https://raw.githubusercontent.com/Kefren-38/trading-monitor-cron/main/badge.png',
-          tag: `trading-${trade.id}`,
-          requireInteraction: true,
-          vibrate: [500, 200, 500, 200, 800],
-          actions: [
-            {
-              action: 'view',
-              title: 'Voir les trades'
-            },
-            {
-              action: 'close', 
-              title: 'Fermer'
-            }
-          ]
+    apns: {
+      payload: {
+        aps: {
+          alert: { title: '🚨 Crypto-Nitro', body: message },
+          badge: 1,
+          sound: priority === 'critical' ? 'critical.wav' : 'default'
         }
       }
-    };
+    },
+    webpush: {
+      headers: { 'Urgency': 'high' },
+      notification: {
+        title: '🚨 Crypto-Nitro - ALERTE TRADING',
+        body: message,
+        icon: 'https://raw.githubusercontent.com/Kefren-38/trading-monitor-cron/main/logo.png',
+        badge: 'https://raw.githubusercontent.com/Kefren-38/trading-monitor-cron/main/badge.png',
+        tag: `trading-${trade.id}`,
+        requireInteraction: true,
+        vibrate: [500, 200, 500, 200, 800],
+        actions: [
+          { action: 'view', title: 'Voir les trades' },
+          { action: 'close', title: 'Fermer' }
+        ]
+      }
+    }
+  };
     
     const response = await messaging.send(notificationData);
     console.log('✅ Notification FCM envoyée:', response);
