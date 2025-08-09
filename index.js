@@ -132,51 +132,98 @@ const tradeId = trade.id;
   let priority = 'normal';
   let notifKey = '';
 
-  // 🚀 PROFITS (+5%)
-  if (performance >= 5) {
-    notifKey = `${userId}_${tradeId}_profit_5`;
-    if (!sentNotifications.has(notifKey)) {
-      shouldNotify = true;
-      message = `🚀 ${trade.token} : +${performance.toFixed(1)}% de profit !`;
-      priority = 'normal';
-    }
+// ===== SEUILS DE NOTIFICATIONS =====
+
+// 👑 PROFITS LÉGENDAIRES (+80%)
+if (performance >= 80) {
+  notifKey = `${userId}_${tradeId}_profit_80`;
+  if (!sentNotifications.has(notifKey)) {
+    shouldNotify = true;
+    message = `👑 ${trade.token} : +${performance.toFixed(1)}% - PROFIT LÉGENDAIRE !!!`;
+    priority = 'critical';
   }
-  // 📉 PERTES LÉGÈRES (-2%)
-  else if (performance <= -2 && performance > -10) {
-    notifKey = `${userId}_${tradeId}_loss_2`;
-    if (!sentNotifications.has(notifKey)) {
-      shouldNotify = true;
-      message = `📉 ${trade.token} : ${performance.toFixed(1)}% de perte`;
-      priority = 'normal';
-    }
+}
+// 💎 PROFITS EXTRAORDINAIRES (+50%)
+else if (performance >= 50 && performance < 80) {
+  notifKey = `${userId}_${tradeId}_profit_50`;
+  if (!sentNotifications.has(notifKey)) {
+    shouldNotify = true;
+    message = `💎 ${trade.token} : +${performance.toFixed(1)}% - PROFIT EXTRAORDINAIRE !`;
+    priority = 'high';
   }
-  // 🚨 PERTES IMPORTANTES (-10%)
-  else if (performance <= -10 && performance > -20) {
-    notifKey = `${userId}_${tradeId}_loss_10`;
-    if (!sentNotifications.has(notifKey)) {
-      shouldNotify = true;
-      message = `🚨 ${trade.token} : ${performance.toFixed(1)}% de perte importante !`;
-      priority = 'high';
-    }
+}
+// 🌟 PROFITS EXCEPTIONNELS (+30%)
+else if (performance >= 30 && performance < 50) {
+  notifKey = `${userId}_${tradeId}_profit_30`;
+  if (!sentNotifications.has(notifKey)) {
+    shouldNotify = true;
+    message = `🌟 ${trade.token} : +${performance.toFixed(1)}% - PROFIT EXCEPTIONNEL !`;
+    priority = 'high';
   }
-  // 🚨 PERTES DANGEREUSES (-20%)
-  else if (performance <= -20 && performance > -50) {
-    notifKey = `${userId}_${tradeId}_loss_20`;
-    if (!sentNotifications.has(notifKey)) {
-      shouldNotify = true;
-      message = `🚨 ATTENTION ! ${trade.token} : ${performance.toFixed(1)}% de perte dangereuse !`;
-      priority = 'high';
-    }
+}
+// 🚀 EXCELLENT PROFIT (+20%)
+else if (performance >= 20 && performance < 30) {
+  notifKey = `${userId}_${tradeId}_profit_20`;
+  if (!sentNotifications.has(notifKey)) {
+    shouldNotify = true;
+    message = `🚀🚀 ${trade.token} : +${performance.toFixed(1)}% - EXCELLENT PROFIT !`;
+    priority = 'normal';
   }
-  // 💀 PERTES CRITIQUES (-50%)
-  else if (performance <= -50) {
-    notifKey = `${userId}_${tradeId}_loss_50`;
-    if (!sentNotifications.has(notifKey)) {
-      shouldNotify = true;
-      message = `💀 ALERTE CRITIQUE ! ${trade.token} : ${performance.toFixed(1)}% - LIQUIDATION IMMINENTE !`;
-      priority = 'critical';
-    }
+}
+// 🚀 BON PROFIT (+5%)
+else if (performance >= 5 && performance < 20) {
+  notifKey = `${userId}_${tradeId}_profit_5`;
+  if (!sentNotifications.has(notifKey)) {
+    shouldNotify = true;
+    message = `🚀 ${trade.token} : +${performance.toFixed(1)}% de profit !`;
+    priority = 'normal';
   }
+}
+// 📉 PERTES LÉGÈRES (-5%)
+else if (performance <= -5 && performance > -10) {
+  notifKey = `${userId}_${tradeId}_loss_5`;
+  if (!sentNotifications.has(notifKey)) {
+    shouldNotify = true;
+    message = `📉 ${trade.token} : ${performance.toFixed(1)}% de perte`;
+    priority = 'normal';
+  }
+}
+// 🚨 PERTES IMPORTANTES (-10%)
+else if (performance <= -10 && performance > -20) {
+  notifKey = `${userId}_${tradeId}_loss_10`;
+  if (!sentNotifications.has(notifKey)) {
+    shouldNotify = true;
+    message = `🚨 ${trade.token} : ${performance.toFixed(1)}% de perte importante !`;
+    priority = 'normal';
+  }
+}
+// 🚨 PERTES DANGEREUSES (-20%)
+else if (performance <= -20 && performance > -50) {
+  notifKey = `${userId}_${tradeId}_loss_20`;
+  if (!sentNotifications.has(notifKey)) {
+    shouldNotify = true;
+    message = `🚨 ATTENTION ! ${trade.token} : ${performance.toFixed(1)}% de perte dangereuse !`;
+    priority = 'high';
+  }
+}
+// 💀 PERTES CRITIQUES (-50%)
+else if (performance <= -50 && performance > -80) {
+  notifKey = `${userId}_${tradeId}_loss_50`;
+  if (!sentNotifications.has(notifKey)) {
+    shouldNotify = true;
+    message = `💀 ALERTE CRITIQUE ! ${trade.token} : ${performance.toFixed(1)}% - LIQUIDATION IMMINENTE !`;
+    priority = 'critical';
+  }
+}
+// 💀 PERTES CATASTROPHIQUES (-80%)
+else if (performance <= -80) {
+  notifKey = `${userId}_${tradeId}_loss_80`;
+  if (!sentNotifications.has(notifKey)) {
+    shouldNotify = true;
+    message = `💀💀 ${trade.token} : ${performance.toFixed(1)}% - PERTE CATASTROPHIQUE !!! STOP LOSS URGENT !!!`;
+    priority = 'critical';
+  }
+}
   
   // ✅ ENVOYER NOTIFICATION SI NÉCESSAIRE
   if (shouldNotify) {
