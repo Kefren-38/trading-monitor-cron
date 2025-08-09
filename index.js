@@ -253,12 +253,9 @@ async function sendFCMNotification(fcmToken, trade, message, priority = 'normal'
       },
       android: {
         priority: 'high',
-        ttl: 0,
         notification: {
           channel_id: 'trading_alerts',
-          priority: 'high',
-          default_vibrate_timings: true,
-          notification_priority: 2
+          priority: 'high'
         }
       },
       apns: {
