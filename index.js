@@ -59,10 +59,27 @@ async function checkTradingAlerts() {
       const userData = userDoc.data();
       const userId = userDoc.id;
       
-      // Vérifier s'il a un token FCM
-      if (!userData.fcmToken) {
-        continue;
-      }
+        // Vérifier s'il a un token FCM
+        if (!userData.fcmToken) {
+          console.log(`⚠️ User ${userId}: pas de token FCM`);
+          continue;
+        }
+        
+        // ✅ AJOUTER ICI - Test validité token
+        try {
+          await messaging.send({
+            token: userData.fcmToken,
+            data: { test: 'ping' }
+          }, true); // dry run = test sans envoyer
+        } catch (error) {
+          if (error.code === 'messaging/registration-token-not-registered') {
+            console.log(`🗑️ Token invalide pour user ${userId}, suppression...`);
+            await db.collection('users').doc(userId).update({
+              fcmToken: admin.firestore.FieldValue.delete()
+            });
+            continue;
+          }
+        }
       
       // Vérifier s'il a des trades ouverts
       const openTrades = userData.tableau?.openTrades || [];
