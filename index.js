@@ -205,11 +205,15 @@ async function sendFCMNotification(fcmToken, trade, message, priority = 'normal'
         requireInteraction: priority === 'critical' ? 'true' : 'false'
       },
       android: {
-        priority: priority === 'critical' ? 'high' : 'normal',
+        priority: 'high',
+        ttl: 0,
         notification: {
           channel_id: 'trading_alerts',
-          priority: priority === 'critical' ? 'high' : 'default',
-          default_vibrate_timings: true
+          priority: 'high',
+          default_vibrate_timings: true,
+          notification_priority: 2,
+          visibility: 1,
+          sticky: false
         }
       },
       apns: {
@@ -225,14 +229,17 @@ async function sendFCMNotification(fcmToken, trade, message, priority = 'normal'
         }
       },
       webpush: {
+        headers: {
+        'Urgency': 'high' // ← FORCE LIVRAISON IMMÉDIATE
+        },
         notification: {
           title: '🚨 CryptoTraders Pro - ALERTE TRADING',
           body: message,
           icon: 'https://raw.githubusercontent.com/Kefren-38/trading-monitor-cron/main/logo.png',
           badge: 'https://raw.githubusercontent.com/Kefren-38/trading-monitor-cron/main/badge.png',
           tag: `trading-${trade.id}`,
-          requireInteraction: priority === 'critical',
-          vibrate: priority === 'critical' ? [500, 200, 500, 200, 800] : [200, 100, 200]
+          requireInteraction: true,
+          vibrate: [500, 200, 500, 200, 800]
         }
       }
     };
