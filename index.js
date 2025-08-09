@@ -161,6 +161,16 @@ const tradeId = trade.id;
     }
   }
   
+  // ✅ ENVOYER NOTIFICATION SI NÉCESSAIRE
+  if (shouldNotify) {
+    const sent = await sendFCMNotification(userData.fcmToken, trade, message, priority);
+    if (sent) {
+      sentNotifications.add(notifKey);
+      console.log(`🔔 Notification envoyée: ${message}`);
+      return true;
+    }
+  }
+  
   return false;
 }
 
