@@ -240,43 +240,63 @@ else if (performance <= -80) {
 
 // ===== ENVOI NOTIFICATION FCM =====
 async function sendFCMNotification(fcmToken, trade, message, priority = 'normal') {
- try {
-   const notificationData = {
-     token: fcmToken,
-     data: {
-       tradeId: trade.id.toString(),
-       token: trade.token,
-       priority: priority,
-       performance: trade.perfFlottante?.toString() || '0',
-       timestamp: Date.now().toString(),
-       requireInteraction: priority === 'critical' ? 'true' : 'false'
-     },
-     webpush: {
-       headers: {
-         'Urgency': 'high'
-       },
-       notification: {
-         title: '🚨 CryptoTraders Pro - ALERTE TRADING',
-         body: message,
-         icon: 'https://raw.githubusercontent.com/Kefren-38/trading-monitor-cron/main/logo.png',
-         badge: 'https://raw.githubusercontent.com/Kefren-38/trading-monitor-cron/main/badge.png',
-         tag: `trading-${trade.id}`,
-         requireInteraction: true,
-         vibrate: [500, 200, 500, 200, 800],
-         actions: [
-           {
-             action: 'view',
-             title: 'Voir les trades'
-           },
-           {
-             action: 'close', 
-             title: 'Fermer'
-           }
-         ]
-       }
-     }
-   };
-   
+  try {
+    const notificationData = {
+      token: fcmToken,
+      data: {
+        tradeId: trade.id.toString(),
+        token: trade.token,
+        priority: priority,
+        performance: trade.perfFlottante?.toString() || '0',
+        timestamp: Date.now().toString(),
+        requireInteraction: priority === 'critical' ? 'true' : 'false'
+      },
+      android: {
+        priority: 'high',
+        notification: {
+          channel_id: 'trading_alerts',
+          priority: 'max',
+          notification_priority: 2
+        }
+      },
+      apns: {
+        payload: {
+          aps: {
+            alert: {
+              title: '🚨 CryptoTraders Pro',
+              body: message
+            },
+            badge: 1,
+            sound: priority === 'critical' ? 'critical.wav' : 'default'
+          }
+        }
+      },
+      webpush: {
+        headers: {
+          'Urgency': 'high'
+        },
+        notification: {
+          title: '🚨 CryptoTraders Pro - ALERTE TRADING',
+          body: message,
+          icon: 'https://raw.githubusercontent.com/Kefren-38/trading-monitor-cron/main/logo.png',
+          badge: 'https://raw.githubusercontent.com/Kefren-38/trading-monitor-cron/main/badge.png',
+          tag: `trading-${trade.id}`,
+          requireInteraction: true,
+          vibrate: [500, 200, 500, 200, 800],
+          actions: [
+            {
+              action: 'view',
+              title: 'Voir les trades'
+            },
+            {
+              action: 'close', 
+              title: 'Fermer'
+            }
+          ]
+        }
+      }
+    };
+    
     const response = await messaging.send(notificationData);
     console.log('✅ Notification FCM envoyée:', response);
     return true;
