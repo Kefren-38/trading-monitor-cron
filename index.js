@@ -248,7 +248,8 @@ async function sendFCMNotification(fcmToken, trade, message, priority = 'normal'
       token: trade.token,
       priority: priority,
       performance: trade.perfFlottante?.toString() || '0',
-      timestamp: Date.now().toString()
+      timestamp: Date.now().toString(),
+      emergency: 'true'
     },
     android: {
       priority: 'high',
@@ -278,6 +279,8 @@ async function sendFCMNotification(fcmToken, trade, message, priority = 'normal'
       notification: {
         title: '🚨 ALERTE TRADING CRITIQUE',
         body: message,
+        icon: 'https://raw.githubusercontent.com/Kefren-38/trading-monitor-cron/main/logo.png', // ← LOGO
+        badge: 'https://raw.githubusercontent.com/Kefren-38/trading-monitor-cron/main/badge.png', // ← BADGE
         tag: `critical-${trade.id}`,
         requireInteraction: true,
         renotify: true,
