@@ -252,10 +252,16 @@ async function sendFCMNotification(fcmToken, trade, message, priority = 'normal'
     },
     android: {
       priority: 'high',
+      ttl: 0,
       notification: {
-        channel_id: 'high_importance',
+        channel_id: 'critical_alerts', // ← Canal critique
         priority: 'max',
-        notification_priority: 1,
+        notification_priority: 2,      // ← NOTIFICATION_PRIORITY_MAX
+        category: 'alarm',             // ← Catégorie critique
+        visibility: 'public',          // ← Visible sur écran verrouillé
+        show_when: true,
+        ongoing: false,
+        auto_cancel: true,
         default_sound: true,
         default_vibrate_timings: true
       }
@@ -270,18 +276,21 @@ async function sendFCMNotification(fcmToken, trade, message, priority = 'normal'
       }
     },
     webpush: {
-      headers: { 'Urgency': 'high' },
+      headers: {
+        'Urgency': 'high',
+        'TTL': '0'
+      },
       notification: {
-        title: '🚨 Crypto-Nitro - ALERTE TRADING',
+        title: '🚨 ALERTE TRADING CRITIQUE',
         body: message,
-        icon: 'https://raw.githubusercontent.com/Kefren-38/trading-monitor-cron/main/logo.png',
-        badge: 'https://raw.githubusercontent.com/Kefren-38/trading-monitor-cron/main/badge.png',
-        tag: `trading-${trade.id}`,
-        requireInteraction: true,
-        vibrate: [500, 200, 500, 200, 800],
+        tag: `critical-${trade.id}`,
+        requireInteraction: true,     // ← Force interaction
+        renotify: true,              // ← Force re-affichage
+        silent: false,
+        vibrate: [1000, 500, 1000, 500, 1000], // ← Vibration intense
         actions: [
-          { action: 'view', title: 'Voir les trades' },
-          { action: 'close', title: 'Fermer' }
+          { action: 'view', title: '👀 VOIR' },
+          { action: 'close', title: '❌ FERMER' }
         ]
       }
     }
