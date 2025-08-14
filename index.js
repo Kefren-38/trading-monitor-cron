@@ -312,18 +312,16 @@ async function sendFCMNotification(fcmToken, trade, message, priority = 'normal'
       const query = usersRef.where('fcmToken', '==', fcmToken);
       const snapshot = await query.get();
         
-      snapshot.forEach(async (doc) => {
-        await doc.ref.update({
-          fcmToken: admin.firestore.FieldValue.delete()
-        });
-      });
-    }
-
-
-    // Si token invalide, le supprimer de la base
-    if (error.code === 'messaging/registration-token-not-registered') {
-      console.log('🗑️ Token FCM invalide, suppression...');
-      // Ici tu peux ajouter code pour supprimer le token invalide
+      for (const doc of snapshot.docs) {
+        try {
+          await doc.ref.update({
+            fcmToken: admin.firestore.FieldValue.delete()
+          });
+          console.log(`🗑️ Token supprimé pour user ${doc.id}`);
+        } catch (deleteError) {
+          console.error('❌ Erreur suppression token:', deleteError);
+        }
+      }
     }
     
     return false;
