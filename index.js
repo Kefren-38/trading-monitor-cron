@@ -66,20 +66,20 @@ async function checkTradingAlerts() {
         }
         
         // ✅ AJOUTER ICI - Test validité token
-        //try {
-        //  await messaging.send({
-        //    token: userData.fcmToken,
-        //    data: { test: 'ping' }
-        //  }, true); // dry run = test sans envoyer
-        //} catch (error) {
-        //  if (error.code === 'messaging/registration-token-not-registered') {
-        //    console.log(`🗑️ Token invalide pour user ${userId}, suppression...`);
-        //    await db.collection('users').doc(userId).update({
-        //      fcmToken: admin.firestore.FieldValue.delete()
-        //    });
-        //    continue;
-        //  }
-        //}
+        try {
+          await messaging.send({
+            token: userData.fcmToken,
+            data: { test: 'ping' }
+          }, true); // dry run = test sans envoyer
+        } catch (error) {
+          if (error.code === 'messaging/registration-token-not-registered') {
+            console.log(`🗑️ Token invalide pour user ${userId}, suppression...`);
+            await db.collection('users').doc(userId).update({
+              fcmToken: admin.firestore.FieldValue.delete()
+            });
+            continue;
+          }
+        }
       
       // Vérifier s'il a des trades ouverts
       const openTrades = userData.tableau?.openTrades || [];
@@ -301,6 +301,25 @@ async function sendFCMNotification(fcmToken, trade, message, priority = 'normal'
   } catch (error) {
     console.error('❌ Erreur envoi FCM:', error);
     
+
+    // Ligne 267, après console.error('❌ Erreur envoi FCM:', error);
+    if (error.code === 'messaging/registration-token-not-registered' || 
+        error.code === 'messaging/invalid-registration-token') {
+      console.log('🗑️ Token FCM invalide, suppression de la base...');
+        
+      // Supprimer le token de tous les utilisateurs ayant ce token
+      const usersRef = db.collection('users');
+      const query = usersRef.where('fcmToken', '==', fcmToken);
+      const snapshot = await query.get();
+        
+      snapshot.forEach(async (doc) => {
+        await doc.ref.update({
+          fcmToken: admin.firestore.FieldValue.delete()
+        });
+      });
+    }
+
+
     // Si token invalide, le supprimer de la base
     if (error.code === 'messaging/registration-token-not-registered') {
       console.log('🗑️ Token FCM invalide, suppression...');
